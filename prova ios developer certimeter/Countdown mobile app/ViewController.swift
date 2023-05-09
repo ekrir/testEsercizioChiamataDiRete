@@ -27,7 +27,6 @@ class ViewController: UIViewController {
             return}
 
         let group = DispatchGroup()
-        let group2 = DispatchGroup()
         group.enter()
         
         var subscribersList: [Subscibers]?
@@ -47,14 +46,9 @@ class ViewController: UIViewController {
 
         
         group.notify(queue: .main){
-            var listaSubscribersConImmagini: [(Subscibers, UIImage)] = []
-            if let subscribersList = subscribersList, let image = UIImage(systemName: "person.circle"){
-                for sub in subscribersList{
-                    listaSubscribersConImmagini.append((sub, image ))
-                }
-            }
+            guard let subscribersList = subscribersList else {return}
             let myTableViewController = ResultListViewController()
-            myTableViewController.subscribersList = listaSubscribersConImmagini
+            myTableViewController.subscribersList = subscribersList
             self.show(myTableViewController, sender: self)
         }
     }

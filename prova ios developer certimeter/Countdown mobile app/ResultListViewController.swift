@@ -11,7 +11,7 @@ import UIKit
 class  ResultListViewController: UITableViewController{
     var owner: String = ""
     var repo: String = ""
-    var subscribersList: [(Subscibers, UIImage)]?
+    var subscribersList: [Subscibers]?
     
     
 
@@ -33,7 +33,9 @@ extension ResultListViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResultTableViewCell") as? ResultTableViewCell
-        cell?.setup(immagine: subscribersList?[indexPath.row].1 ?? UIImage(), nome: subscribersList?[indexPath.row].0.login ?? "")
+        if let subscribersList = subscribersList{
+            cell?.setup(subscriber: subscribersList[indexPath.row])
+        }
         return cell!
     }
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
