@@ -11,10 +11,13 @@ import UIKit
 class  ResultListViewController: UITableViewController{
     var owner: String = ""
     var repo: String = ""
+    var subscribersList: [(Subscibers, UIImage)]?
     
-    var test: [Subscibers] = [.init(login: "gianfrancioschio", avatar_url: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.smashingmagazine.com%2F2016%2F05%2Fbetter-architecture-for-ios-apps-model-view-controller-pattern%2F&psig=AOvVaw36tzoIFgeWa_Dbh_7yiJYA&ust=1683643992269000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCMiCz-L85f4CFQAAAAAdAAAAABAF")]
+    
 
     override func viewDidLoad() {
+        
+        self.tableView.dataSource = self
         title = "subscribers"
         self.tableView.register(UINib(nibName: "ResultTableViewCell", bundle: nil), forCellReuseIdentifier: "ResultTableViewCell")
         tableView.separatorStyle = .none
@@ -24,12 +27,13 @@ class  ResultListViewController: UITableViewController{
 
 extension ResultListViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        guard let subscribersList = subscribersList else {return 0}
+        return subscribersList.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResultTableViewCell") as? ResultTableViewCell
-        cell?.setup(immagine: UIImage(), nome: test[indexPath.row].login ?? "")
+        cell?.setup(immagine: subscribersList?[indexPath.row].1 ?? UIImage(), nome: subscribersList?[indexPath.row].0.login ?? "")
         return cell!
     }
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

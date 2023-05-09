@@ -15,7 +15,8 @@ class ResultTableViewCell: UITableViewCell{
     
     
     func setup (immagine: UIImage, nome: String){
-        profileImageView.image = UIImage()
+        profileImageView.image = immagine
+        
         profileLabel.text = nome
     }
 }

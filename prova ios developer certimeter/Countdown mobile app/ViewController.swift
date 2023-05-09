@@ -23,35 +23,41 @@ class ViewController: UIViewController {
     }
 
     @IBAction func continueTapped() {
-        print("bottone tappato")
-        //guard let repo = repoTextField.text, let owner = ownerTextField.text ,!repo.isEmpty, !owner.isEmpty else {
-            //print("repo vuota")
-            //return}
-        /*
-        let storiboard = UIStoryboard(name: "Main", bundle: nil)
-        let vic = storiboard.instantiateViewController(withIdentifier: "test") as! test
-        vic.modalPresentationStyle = .fullScreen
-        UINavigationController(rootViewController: vi)
-        var embeddedInNavigationController: UINavigationController {
-            let navigationController = NavigationController(rootViewController: self)
-            navigationController.theme = .default
-            navigationController.modalPresentationStyle = UIModalPresentationStyle.fullScreen
-            navigationController.customizeForDefaultAppearance()
-            return navigationController
-        }
-        
-        
-                
-        self.navigationController?.present(vic., animated: true, completion: nil)
-*/
-        let myTableViewController = ResultListViewController()
+        guard let repo = repoTextField.text, let owner = ownerTextField.text ,!repo.isEmpty, !owner.isEmpty else {
+            return}
 
+        let group = DispatchGroup()
+        let group2 = DispatchGroup()
+        group.enter()
         
-        self.show(myTableViewController, sender: self)
+        var subscribersList: [Subscibers]?
 
-        //self.navigationController?.present(navigationController, animated: true)
-        //present(navigationController, animated: true ,completion: nil)
+        let urlSession = URLSession.shared
+        let url = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/subscribers")
+
+        guard let url = url else { return}
+        let urlRequest = URLRequest(url: url)
+        urlSession.dataTask(with: urlRequest){
+            data, response, error in
+            if let data = data{
+                subscribersList = try? JSONDecoder().decode([Subscibers].self, from: data)
+                group.leave()
             }
+        }.resume()
+
+        
+        group.notify(queue: .main){
+            var listaSubscribersConImmagini: [(Subscibers, UIImage)] = []
+            if let subscribersList = subscribersList, let image = UIImage(systemName: "person.circle"){
+                for sub in subscribersList{
+                    listaSubscribersConImmagini.append((sub, image ))
+                }
+            }
+            let myTableViewController = ResultListViewController()
+            myTableViewController.subscribersList = listaSubscribersConImmagini
+            self.show(myTableViewController, sender: self)
+        }
+    }
 
 }
 
